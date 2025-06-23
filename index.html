@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yana - Your Ride-or-Die AI Bestie ✨</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Short+Stack&family=Comic+Neue:wght@400;700&display=swap');
+        
+        :root {
+            --pink: #ffb6c1;
+            --hotpink: #ff69b4;
+            --purple: #d8bfd8;
+            --yellow: #fffacd;
+            --bg-color: #fff5f5;
+        }
+        
+        body {
+            font-family: 'Comic Neue', cursive;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle, rgba(255,182,193,0.2) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin: 20px 0;
+            width: 100%;
+        }
+        
+        h1 {
+            font-family: 'Short Stack', cursive;
+            color: var(--hotpink);
+            text-shadow: 2px 2px 0px white;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #888;
+            font-style: italic;
+            margin-top: 0;
+        }
+        
+        .chat-container {
+            width: 90%;
+            max-width: 600px;  /* Made wider */
+            height: 70vh;  /* Made taller */
+            border: 3px solid var(--pink);
+            border-radius: 20px;
+            background-color: white;
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .chat-header {
+            background: linear-gradient(to right, var(--pink), var(--purple));
+            padding: 10px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            border-bottom: 2px solid var(--hotpink);
+        }
+        
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: var(--yellow);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffb6c1' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .user-message {
+            background-color: var(--hotpink);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            background-color: white;
+            border: 1px solid var(--pink);
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .bot-message::before {
+            content: "Yana ✨";
+            display: block;
+            font-size: 0.8rem;
+            color: var(--hotpink);
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+        
+        .input-area {
+            display: flex;
+            padding: 10px;
+            background-color: white;
+            border-top: 2px solid var(--pink);
+        }
+        
+        #user-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--pink);
+            border-radius: 25px;
+            font-family: 'Comic Neue', cursive;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        #send-button {
+            background-color: var(--hotpink);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        
+        #send-button:hover {
+            background-color: #ff1493;
+            transform: scale(1.05);
+        }
+        
+        .new-chat-btn {
+            background-color: var(--purple);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-family: 'Comic Neue', cursive;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .new-chat-btn:hover {
+            background-color: #c9a0dc;
+            transform: translateY(-2px);
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 10px 15px;
+            background-color: white;
+            border: 1px solid var(--pink);
+            border-radius: 18px;
+            margin-right: auto;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+        
+        .typing-dots {
+            display: inline-flex;
+        }
+        
+        .typing-dots span {
+            height: 8px;
+            width: 8px;
+            margin: 0 2px;
+            background-color: var(--hotpink);
+            border-radius: 50%;
+            display: inline-block;
+            opacity: 0.4;
+        }
+        
+        .typing-dots span:nth-child(1) {
+            animation: typingAnimation 1s infinite;
+        }
+        
+        .typing-dots span:nth-child(2) {
+            animation: typingAnimation 1s infinite 0.2s;
+        }
+        
+        .typing-dots span:nth-child(3) {
+            animation: typingAnimation 1s infinite 0.4s;
+        }
+        
+        @keyframes typingAnimation {
+            0% { opacity: 0.4; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-3px); }
+            100% { opacity: 0.4; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            opacity: 0;
+            font-size: 20px;
+            color: var(--pink);
+            animation: float 5s linear infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts-container"></div>
+    
+    <div class="header">
+        <button class="language-switcher" id="language-switcher">
+            🌐 English
+            <div class="language-dropdown" id="language-dropdown">
+                <div class="language-option" data-lang="en">English</div>
+                <div class="language-option" data-lang="fr">Français</div>
+                <div class="language-option" data-lang="zh">العربية </div>
+                <div class="language-option" data-lang="es">Español</div>
+                <div class="language-option" data-lang="de">Deutsch</div>
+                <div class="language-option" data-lang="ja">日本語</div>
+                <div class="language-option" data-lang="ko">한국어</div>
+
+            </div>
+        </button>
+        <h1>Yana ✨</h1>
+        <p class="subtitle">Your multilingual ride-or-die AI bestie</p>
+    </div>
+    
+    <div class="chat-container">
+        <div class="chat-header">
+            Group Chat Chaos Mode Activated 🔥
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                BESTIE YOU'RE HERE!! 🎉 What's the tea today? Spill it! ☕️✨
+            </div>
+        </div>
+        <div class="typing-indicator" id="typing-indicator">
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type your message here bestie..." autocomplete="off">
+            <button id="send-button">➤</button>
+        </div>
+    </div>
+    
+    <button class="new-chat-btn" id="new-chat-btn">Start New Chat 💫</button>
+    
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const newChatBtn = document.getElementById('new-chat-btn');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const heartsContainer = document.getElementById('hearts-container');
+        
+        // Generate random hearts
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            heartsContainer.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+        
+        // Create hearts periodically
+        setInterval(createHeart, 300);
+        
+        // Base URL for API calls
+        const API_BASE_URL = 'http://localhost:5000';
+        
+        // Send message when button is clicked or Enter is pressed
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (message) {
+                // Add user message to chat
+                addMessage(message, 'user');
+                userInput.value = '';
+                
+                // Show typing indicator
+                typingIndicator.style.display = 'block';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Send to backend
+                fetch(`${API_BASE_URL}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        user_id: 'default_user'
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Hide typing indicator
+                    typingIndicator.style.display = 'none';
+                    
+                    // Add bot response to chat
+                    if (data.response) {
+                        addMessage(data.response, 'bot');
+                        // Add hearts when Yana responds
+                        createHeart();
+                        createHeart();
+                    }
+                })
+                .catch(error => {
+                    typingIndicator.style.display = 'none';
+                    addMessage("Oops, my wires got crossed! Try again bestie? 😅", 'bot');
+                    console.error('Error:', error);
+                });
+            }
+        }
+        
+        // Add a message to the chat
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(sender + '-message');
+            messageDiv.innerHTML = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Start new chat
+        function startNewChat() {
+            chatMessages.innerHTML = `
+                <div class="message bot-message">
+                    Ooh fresh start! ✨ What's on your mind bestie? 💭
+                </div>
+            `;
+            
+            fetch(`${API_BASE_URL}/new_chat`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: 'default_user'
+                })
+            })
+            .catch(error => {
+                console.error('Error starting new chat:', error);
+            });
+        }
+        
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        newChatBtn.addEventListener('click', startNewChat);
+    </script>
+</body>
+</html>
